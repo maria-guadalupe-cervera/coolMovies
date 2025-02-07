@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import { exampleReducer, exampleEpics } from './slices';
 import { combineEpics, createEpicMiddleware } from 'redux-observable';
 import { CreateStoreOptions } from './types';
+import { exampleEpics, exampleReducer } from '../features/example/state';
 
-const rootEpic = combineEpics(exampleEpics);
+const rootEpic = combineEpics<any, any, RootState>(exampleEpics);
 
 export const createStore = ({ epicDependencies }: CreateStoreOptions) => {
   const epicMiddleware = createEpicMiddleware({
@@ -19,7 +19,7 @@ export const createStore = ({ epicDependencies }: CreateStoreOptions) => {
     },
   });
 
-  epicMiddleware.run(rootEpic);
+  epicMiddleware.run(rootEpic as any);
 
   return createdStore;
 };

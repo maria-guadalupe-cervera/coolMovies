@@ -19,7 +19,7 @@ export const slice = createSlice({
     clearData: (state) => {
       state.fetchData = undefined;
     },
-    loaded: (state, action: PayloadAction<{ data: unknown[] }>) => {
+    loaded: (state, action: PayloadAction<{ data: any }>) => {
       state.fetchData = action.payload.data;
     },
     loadError: (state) => {

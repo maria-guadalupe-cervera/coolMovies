@@ -3,12 +3,13 @@ import type { AppProps } from 'next/app';
 import React, { FC, useState } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import Head from 'next/head';
-import { createStore } from '../redux';
+import { createStore } from '../state';
 import { EnhancedStore } from '@reduxjs/toolkit';
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 
 const App: FC<AppProps> = ({ Component, pageProps }) => {
   const [store, setStore] = useState<EnhancedStore | null>(null);
+  const [client, setClient] = useState<ApolloClient<any> | null>(null);
   React.useEffect(() => {
     const client = new ApolloClient({
       cache: new InMemoryCache(),
@@ -17,8 +18,9 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
 
     const store = createStore({ epicDependencies: { client } });
     setStore(store);
+    setClient(client);
   }, []);
-  if (!store) return <>{'Loading...'}</>;
+  if (!store || !client) return <>{'Loading...'}</>;
   return (
     <>
       <Head>
@@ -28,7 +30,9 @@ const App: FC<AppProps> = ({ Component, pageProps }) => {
         <meta name='viewport' content='width=device-width, initial-scale=1.0' />
       </Head>
       <ReduxProvider store={store}>
-        <Component {...pageProps} />
+        <ApolloProvider client={client}>
+          <Component {...pageProps} />
+        </ApolloProvider>
       </ReduxProvider>
     </>
   );
