@@ -11,12 +11,15 @@ import type { NextPage } from 'next';
 import { useAppDispatch, useAppSelector } from '../../../state';
 import { exampleActions } from '../state';
 import { memo } from 'react';
+import { useCurrentUserLazyQuery } from '../../../generated/graphql';
 
 const primary = '#1976d2';
 
 const Example = () => {
   const dispatch = useAppDispatch();
   const exampleState = useAppSelector((state) => state.example);
+
+  const [fetchUser, { data, loading }] = useCurrentUserLazyQuery();
   return (
     <div css={styles.root}>
       <Paper elevation={3} css={styles.navBar}>
@@ -29,45 +32,65 @@ const Example = () => {
         </Typography>
         <Typography variant={'subtitle1'} css={styles.subtitle}>
           {`Thank you for taking the time to take our test. We really appreciate it. 
-        All the information on what is required can be found in the README at the root of this repo. 
-        Please don't spend ages on this and just get through as much of it as you can. 
-        Good luck! 😄`}
+        All the information on what is required can be found in the README at the root of this repo.`}
+        </Typography>
+        <Typography variant={'subtitle1'} css={styles.subtitle}>
+          {`I would recommend using Redux for a lot of your global state management. 
+          For data fetching, you can use either Redux Observable or Apollo Hooks. Which you can see examples of below.`}
+        </Typography>
+
+        <Typography variant={'h4'} css={styles.subHeading}>
+          {'State:'}
+        </Typography>
+
+        <Tooltip
+          title={`Side Effect Count from Epic (Gets run on odd values): ${exampleState.sideEffectCount}`}
+          arrow
+        >
+          <Button
+            variant={'contained'}
+            onClick={() => dispatch(exampleActions.increment())}
+          >
+            {`Redux Increment: ${exampleState.value}`}
+          </Button>
+        </Tooltip>
+
+        <Typography variant={'h4'} css={styles.subHeading}>
+          {'Data Fetching:'}
         </Typography>
 
         <div css={styles.mainControls}>
-          <Tooltip
-            title={`Side Effect Count from Epic (Gets run on odd values): ${exampleState.sideEffectCount}`}
-            arrow
-          >
-            <Button
-              variant={'contained'}
-              onClick={() => dispatch(exampleActions.increment())}
-            >
-              {`Redux Increment: ${exampleState.value}`}
-            </Button>
-          </Tooltip>
           <Button
             variant={'outlined'}
-            onClick={() =>
-              dispatch(
-                exampleState.fetchData
-                  ? exampleActions.clearData()
-                  : exampleActions.fetch()
-              )
-            }
+            onClick={() => dispatch(exampleActions.fetch())}
           >
-            {exampleState.fetchData ? 'Hide some data' : 'Fetch some data'}
+            {'Fetch User using Redux Observable'}
           </Button>
-        </div>
+          <Zoom in={Boolean(exampleState.fetchData)} unmountOnExit mountOnEnter>
+            <TextField
+              css={styles.dataInput}
+              multiline
+              label={'User Data from GraphQL using Redux Observable'}
+              defaultValue={JSON.stringify(exampleState.fetchData)}
+            />
+          </Zoom>
 
-        <Zoom in={Boolean(exampleState.fetchData)} unmountOnExit mountOnEnter>
-          <TextField
-            css={styles.dataInput}
-            multiline
-            label={'Some Data'}
-            defaultValue={JSON.stringify(exampleState.fetchData)}
-          />
-        </Zoom>
+          <Button
+            variant={'outlined'}
+            onClick={() => fetchUser()}
+            disabled={loading}
+          >
+            {loading ? 'Loading...' : 'Fetch User using Apollo Hooks'}
+          </Button>
+          <Zoom in={Boolean(data)} unmountOnExit mountOnEnter>
+            <TextField
+              css={styles.dataInput}
+              multiline
+              label={'User Data from GraphQL using Apollo Hooks'}
+              defaultValue={JSON.stringify(data)}
+            />
+          </Zoom>
+        </div>
       </div>
     </div>
   );
@@ -101,6 +124,11 @@ const styles = {
     alignItems: 'center',
   }),
   heading: css({ marginTop: 16, fontSize: '2.75rem', textAlign: 'center' }),
+  subHeading: css({
+    margin: '16px 0',
+    fontSize: '1.25rem',
+    textAlign: 'center',
+  }),
   subtitle: css({
     fontWeight: 300,
     textAlign: 'center',
@@ -110,8 +138,9 @@ const styles = {
   }),
   mainControls: css({
     display: 'flex',
+    flexDirection: 'column',
+    gap: 8,
     alignItems: 'center',
-    button: { marginRight: 16 },
   }),
   dataInput: css({
     alignSelf: 'stretch',
