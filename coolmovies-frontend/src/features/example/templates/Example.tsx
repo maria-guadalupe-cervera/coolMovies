@@ -11,6 +11,7 @@ import { useAppDispatch, useAppSelector } from '../../../state';
 import { exampleActions } from '../state';
 import { memo } from 'react';
 import { useCurrentUserLazyQuery } from '../../../generated/graphql';
+import { FetchButton } from '../components/FetchButton';
 
 const primary = '#1976d2';
 
@@ -61,12 +62,10 @@ const Example = () => {
         </Typography>
 
         <div css={styles.mainControls}>
-          <Button
-            variant={'outlined'}
+          <FetchButton
             onClick={() => dispatch(exampleActions.fetch())}
-          >
-            {'Fetch User using Redux Observable'}
-          </Button>
+            label={'Fetch User using Redux Observable'}
+          />
           <Zoom in={Boolean(exampleState.fetchData)} unmountOnExit mountOnEnter>
             <TextField
               css={styles.dataInput}
@@ -76,13 +75,11 @@ const Example = () => {
             />
           </Zoom>
 
-          <Button
-            variant={'outlined'}
+          <FetchButton
             onClick={() => fetchUser()}
+            label={'Fetch User using Apollo Hooks'}
             disabled={loading}
-          >
-            {loading ? 'Loading...' : 'Fetch User using Apollo Hooks'}
-          </Button>
+          />
           <Zoom in={Boolean(data)} unmountOnExit mountOnEnter>
             <TextField
               css={styles.dataInput}
