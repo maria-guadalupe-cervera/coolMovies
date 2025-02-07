@@ -6,7 +6,12 @@ import { filter, map, switchMap } from 'rxjs/operators';
 import { actions, SliceAction } from './slice';
 import { RootState } from '../../../state/store';
 import { EpicDependencies } from '../../../state/types';
-import { CurrentUserDocument } from '../../../generated/graphql';
+import {
+  CurrentUserDocument,
+  CurrentUserQuery,
+  CurrentUserQueryResult,
+  CurrentUserQueryVariables,
+} from '../../../generated/graphql';
 
 export const exampleEpic: Epic<
   SliceAction['increment'],
@@ -30,8 +35,12 @@ export const exampleAsyncEpic: Epic<
     filter(actions.fetch.match),
     switchMap(async () => {
       try {
-        const result = await client.query({
+        const result = await client.query<
+          CurrentUserQueryResult,
+          CurrentUserQueryVariables
+        >({
           query: CurrentUserDocument,
+          fetchPolicy: 'network-only',
         });
         return actions.loaded({ data: result.data });
       } catch (err) {

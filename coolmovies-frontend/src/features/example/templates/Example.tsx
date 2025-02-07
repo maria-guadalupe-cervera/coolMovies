@@ -19,7 +19,9 @@ const Example = () => {
   const dispatch = useAppDispatch();
   const exampleState = useAppSelector((state) => state.example);
 
-  const [fetchUser, { data, loading }] = useCurrentUserLazyQuery();
+  const [fetchUser, { data, loading }] = useCurrentUserLazyQuery({
+    fetchPolicy: 'network-only',
+  });
   return (
     <div css={styles.root}>
       <Paper elevation={3} css={styles.navBar}>
