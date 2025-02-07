@@ -7,7 +7,6 @@ import {
   Typography,
   Zoom,
 } from '@mui/material';
-import type { NextPage } from 'next';
 import { useAppDispatch, useAppSelector } from '../../../state';
 import { exampleActions } from '../state';
 import { memo } from 'react';
