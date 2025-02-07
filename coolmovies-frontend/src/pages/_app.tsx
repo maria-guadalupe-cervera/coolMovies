@@ -3,7 +3,7 @@ import type { AppProps } from 'next/app';
 import React, { FC, useState } from 'react';
 import { Provider as ReduxProvider } from 'react-redux';
 import Head from 'next/head';
-import { createStore } from '../redux';
+import { createStore } from '../state';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 

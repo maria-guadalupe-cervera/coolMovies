@@ -8,11 +8,13 @@ import {
   Zoom,
 } from '@mui/material';
 import type { NextPage } from 'next';
-import { exampleActions, useAppDispatch, useAppSelector } from '../redux';
+import { useAppDispatch, useAppSelector } from '../../../state';
+import { exampleActions } from '../state';
+import { memo } from 'react';
 
 const primary = '#1976d2';
 
-const Home: NextPage = () => {
+const Example = () => {
   const dispatch = useAppDispatch();
   const exampleState = useAppSelector((state) => state.example);
   return (
@@ -117,4 +119,4 @@ const styles = {
   }),
 };
 
-export default Home;
+export default memo(Example);

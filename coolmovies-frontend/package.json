@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "graphql-types": "graphql-codegen --require dotenv/config --config ./codegen.ts dotenv_config_path=./.env.development"
+    "graphql-types": "graphql-codegen --require dotenv/config --config src/codegen.ts dotenv_config_path=./.env.development"
   },
   "dependencies": {
     "@apollo/client": "^3.12.10",
