@@ -1,9 +1,9 @@
 # Important Note
 
-If submitting via a private repository, please add the following user(s) as collaborators to your repo:
+When submitting, please add the following user(s) as collaborators to your **private** repo:
 
-- GitHub `@SheepySean`
-- Gitlab `@SheepySean`
+- GitHub `@SamuelCarlos`
+- Gitlab `@samuel.xavier`
 
 # Coolmovies web challenge
 
@@ -27,7 +27,9 @@ We are providing you a GraphQL API mock application to consume. We have also set
 
 **You will be evaluated on your UI/UX. We expect this to be at the level of a basic prototype; clean and clear flow.**
 
-You will be evaluated against your ability to understand and use the tooling provided and mimic existing patterns that are shown in the examples.
+**You will be evaluated on critical thinking and decision making, so be mindful of any direction you take**
+
+**You will be evaluated against your ability to understand and use the tooling provided and mimic existing patterns that are shown in the examples.**
 
 There are 2 main components for this feature, they **MUST** be completed and working:
 
@@ -38,4 +40,5 @@ Additional things we would like to see:
 
 1. Our designers don't like the default MUI blue. Change this.
 2. Make the proxied GraphQL URL an environment variable.
-3. Add a few unit tests to your code. (These must pass)
+3. Add a few unit tests to your code. (These must pass).
+4. Acessibility is important, [ARC Toolkit](https://chromewebstore.google.com/detail/arc-toolkit/chdkkkccnlfncngelccgbgfmjebmkmce?hl=en) extension is a good companion on this. Configure it to WCAG 2.1 and focus on **errors**.
