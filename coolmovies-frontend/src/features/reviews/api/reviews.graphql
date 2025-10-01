@@ -1,0 +1,30 @@
+# Query all movie reviews with fields needed by UI
+query Reviews {
+  allMovieReviews(orderBy: [ID_DESC]) {
+    nodes {
+      id
+      title
+      body
+      rating
+      movieId
+      userReviewerId
+    }
+  }
+}
+
+# Mutation to create a movie review
+mutation CreateReview($input: CreateMovieReviewInput!) {
+  createMovieReview(input: $input) {
+    movieReview {
+      id
+      title
+      body
+      rating
+      movieId
+      userReviewerId
+    }
+  }
+}
+
+
+
