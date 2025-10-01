@@ -1,0 +1,21 @@
+# Lista de reviews con datos de la película asociada
+query GetReviews {
+  allMovieReviews(orderBy: [ID_DESC]) {
+    nodes {
+      id
+      title
+      body
+      rating
+      movieId
+      userReviewerId
+      movieByMovieId {
+        id
+        title
+        imgUrl
+        releaseDate
+      }
+    }
+  }
+}
+
+
