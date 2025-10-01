@@ -12,6 +12,11 @@ import {
   CreateReviewMutation,
   CreateReviewMutationVariables,
 } from '../../../generated/graphql';
+import {
+  CurrentUserDocument,
+  CurrentUserQuery,
+  CurrentUserQueryVariables,
+} from '../../../generated/graphql';
 
 export const fetchReviewsEpic: Epic<
   ReviewsSliceAction['fetchReviews'],
@@ -40,9 +45,20 @@ export const addReviewEpic: Epic<
 > = (action$, _state$, { client }) =>
   action$.pipe(
     filter(actions.addReview.match),
-    switchMap(({ payload }) =>
-      client
-        .mutate<CreateReviewMutation, CreateReviewMutationVariables>({
+    switchMap(async ({ payload }) => {
+      try {
+        const current = await client.query<
+          CurrentUserQuery,
+          CurrentUserQueryVariables
+        >({ query: CurrentUserDocument, fetchPolicy: 'network-only' });
+        const userId = (current.data as any)?.currentUser?.id;
+        if (!userId) {
+          return actions.addReviewError('No se pudo obtener el usuario actual');
+        }
+        const res = await client.mutate<
+          CreateReviewMutation,
+          CreateReviewMutationVariables
+        >({
           mutation: CreateReviewDocument,
           variables: {
             input: {
@@ -51,14 +67,16 @@ export const addReviewEpic: Epic<
                 body: payload.body ?? null,
                 rating: payload.rating,
                 movieId: payload.movieId,
-                userReviewerId: undefined
+                userReviewerId: userId,
               },
             },
           },
-        })
-        .then((res) => actions.addReviewSuccess(res.data!.createMovieReview!.movieReview as any))
-        .catch((err: Error) => actions.addReviewError(err.message))
-    )
+        });
+        return actions.addReviewSuccess(res.data!.createMovieReview!.movieReview as any);
+      } catch (err: any) {
+        return actions.addReviewError(err.message ?? 'Error creando review');
+      }
+    })
   );
 
 
