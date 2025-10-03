@@ -62,17 +62,19 @@ export default function AddReviewForm() {
   };
 
   return (
-    <Box component={'form'} onSubmit={handleSubmit} noValidate>
+    <Box component={'form'} role={'form'} aria-label={'Agregar review'} onSubmit={handleSubmit} noValidate>
       <Stack spacing={2}>
         <Autocomplete
           loading={moviesLoading}
           options={(moviesData?.allMovies?.nodes ?? []) as { id: string; title: string }[]}
           getOptionLabel={(o) => o?.title ?? ''}
           onChange={(_e, option) => setMovieId(option?.id ?? '')}
+          aria-label={'Seleccionar película'}
           renderInput={(params) => (
             <TextField
               {...params}
               label={'Película'}
+              inputProps={{ ...params.inputProps, 'aria-required': 'true' }}
               error={touched && !movieId}
               helperText={
                 touched && !movieId
@@ -89,6 +91,7 @@ export default function AddReviewForm() {
           label={'Título'}
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          inputProps={{ 'aria-required': 'true' }}
           error={touched && !title}
           helperText={touched && !title ? 'Requerido' : ' '}
           fullWidth
@@ -100,14 +103,15 @@ export default function AddReviewForm() {
           multiline
           minRows={3}
           fullWidth
+          inputProps={{ 'aria-label': 'Comentario' }}
         />
         <Stack direction={'row'} alignItems={'center'} spacing={2}>
-          <span>{'Rating'}</span>
-          <Rating value={Number(rating) || 0} precision={1} onChange={(_e, v) => setRating(v)} />
+          <span id={'rating-label'}>{'Rating'}</span>
+          <Rating aria-labelledby={'rating-label'} value={Number(rating) || 0} precision={1} onChange={(_e, v) => setRating(v)} />
         </Stack>
-        {error ? <Alert severity={'error'}>{error}</Alert> : null}
+        {error ? <Alert role={'alert'} severity={'error'}>{error}</Alert> : null}
         <Box>
-          <Button type={'submit'} variant={'contained'} disabled={loading || hasErrors()}>
+          <Button type={'submit'} variant={'contained'} aria-disabled={loading || hasErrors()} disabled={loading || hasErrors()}>
             {loading ? 'Agregando...' : 'Agregar review'}
           </Button>
         </Box>

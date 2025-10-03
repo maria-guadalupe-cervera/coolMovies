@@ -5,12 +5,13 @@ import { RootState } from '../../../state/store';
 import { EpicDependencies } from '../../../state/types';
 import { actions, ReviewsSliceAction } from './slice';
 import {
-  ReviewsDocument,
-  ReviewsQuery,
-  ReviewsQueryVariables,
+  GetReviewsDocument,
+  GetReviewsQuery,
+  GetReviewsQueryVariables,
   CreateReviewDocument,
   CreateReviewMutation,
   CreateReviewMutationVariables,
+  MovieReviewsOrderBy,
 } from '../../../generated/graphql';
 import {
   CurrentUserDocument,
@@ -26,15 +27,20 @@ export const fetchReviewsEpic: Epic<
 > = (action$, _state$, { client }) =>
   action$.pipe(
     filter(actions.fetchReviews.match),
-    switchMap(() =>
-      client
-        .query<ReviewsQuery, ReviewsQueryVariables>({
-          query: ReviewsDocument,
+    switchMap(({ payload: sortOrder }) => {
+      const orderBy = sortOrder === 'rating_desc' ? MovieReviewsOrderBy.RatingDesc : 
+                     sortOrder === 'rating_asc' ? MovieReviewsOrderBy.RatingAsc : 
+                     MovieReviewsOrderBy.IdDesc;
+      
+      return client
+        .query<GetReviewsQuery, GetReviewsQueryVariables>({
+          query: GetReviewsDocument,
+          variables: { orderBy: [orderBy] },
           fetchPolicy: 'network-only',
         })
         .then((res) => actions.fetchReviewsSuccess(res.data.allMovieReviews?.nodes as any))
-        .catch((err: Error) => actions.fetchReviewsError(err.message))
-    )
+        .catch((err: Error) => actions.fetchReviewsError(err.message));
+    })
   );
 
 export const addReviewEpic: Epic<

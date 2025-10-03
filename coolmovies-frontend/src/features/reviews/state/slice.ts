@@ -25,7 +25,7 @@ export const reviewsSlice = createSlice({
   name: 'reviews',
   initialState,
   reducers: {
-    fetchReviews: (state) => {
+    fetchReviews: (state, action: PayloadAction<string | undefined>) => {
       state.loading = true;
       state.error = null;
     },

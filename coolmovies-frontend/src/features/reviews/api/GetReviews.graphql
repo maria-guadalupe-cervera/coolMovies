@@ -1,6 +1,6 @@
 # Lista de reviews con datos de la película asociada
-query GetReviews {
-  allMovieReviews(orderBy: [ID_DESC]) {
+query GetReviews($orderBy: [MovieReviewsOrderBy!]) {
+  allMovieReviews(orderBy: $orderBy) {
     nodes {
       id
       title
